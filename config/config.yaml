@@ -1,0 +1,48 @@
+project:
+  name: "mavenmagnet-nlp-pipeline"
+  random_seed: 42
+
+paths:
+  input_dir: "data/input"
+  training_file: "data/input/Training.xlsx"
+  process_file: "data/input/Process.xlsx"
+  interim_dir: "data/interim"
+  output_dir: "data/output"
+  artifacts_dir: "artifacts"
+  reports_dir: "reports"
+  logs_dir: "logs"
+
+logging:
+  level: "INFO"
+  log_file: "logs/pipeline.log"
+  format: "%(asctime)s | %(levelname)-8s | %(name)s:%(lineno)d | %(message)s"
+
+baseline:
+  model_type: "tfidf_logistic_regression"
+  ngram_range: [1, 2]
+  max_features: 5000
+  c_param: 1.0
+  class_weight: "balanced"
+  decision_threshold: 0.35
+
+llm:
+  provider: "ollama"
+  base_url: "http://localhost:11434"
+  model: "qwen3:14b"
+  fallback_model: "qwen3.5:9b"
+  temperature: 0.0
+  top_p: 0.9
+  timeout_seconds: 120
+  max_retries: 3
+  retry_backoff_seconds: 2.0
+
+evaluation:
+  n_splits: 5
+  stratify_by_post: true
+  metrics:
+    - "exact_match_ratio"
+    - "micro_f1"
+    - "macro_f1"
+    - "hamming_loss"
+    - "precision"
+    - "recall"
